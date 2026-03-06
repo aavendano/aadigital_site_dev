@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>VibeBlocks</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#00ff40",
+              "background-light": "#f5f8f6",
+              "background-dark": "#0f2314",
+            },
+            fontFamily: {
+              "display": ["Inter", "sans-serif"],
+              "mono": ["JetBrains Mono", "monospace"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen antialiased">
+<div class="relative flex min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<div class="px-40 flex flex-1 justify-center py-5">
+<div class="layout-content-container flex flex-col max-w-[960px] flex-1">
+<!-- Header -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-slate-800 px-10 py-3 bg-white dark:bg-slate-900">
+<div class="flex items-center gap-4 text-slate-900 dark:text-slate-100">
+<div class="size-6 text-primary">
+<span class="material-symbols-outlined text-2xl">grid_view</span>
+</div>
+<h2 class="text-slate-900 dark:text-slate-100 text-xl font-bold leading-tight tracking-tight">VibeBlocks</h2>
+</div>
+<div class="flex flex-1 justify-center gap-8">
+<div class="flex items-center gap-9">
+<a class="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 text-sm font-medium transition-colors" href="#">Docs</a>
+<a class="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 text-sm font-medium transition-colors" href="#">Recipes</a>
+<a class="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 text-sm font-medium transition-colors" href="#">Blog</a>
+</div>
+</div>
+<div class="flex justify-end">
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 px-4 bg-primary text-slate-900 text-sm font-bold shadow-sm hover:bg-primary/90 transition-colors">
+<span>Deploy</span>
+</button>
+</div>
+</header>
+<!-- Hero Section -->
+<div class="@container mt-12 mb-8">
+<div class="@[480px]:p-4">
+<div class="flex min-h-[400px] flex-col gap-6 items-center justify-center p-4">
+<div class="flex flex-col gap-4 text-center max-w-3xl">
+<h1 class="text-slate-900 dark:text-slate-100 text-5xl font-black leading-tight tracking-tight @[480px]:text-7xl">
+                                        VibeBlocks
+                                    </h1>
+<h2 class="text-slate-500 dark:text-slate-400 text-lg font-medium leading-relaxed @[480px]:text-xl">
+                                        The Zero-Gravity Web Architecture
+                                    </h2>
+</div>
+<div class="flex flex-wrap gap-4 mt-6 justify-center">
+<button class="flex min-w-[120px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-6 bg-primary text-slate-900 text-base font-bold shadow-sm hover:bg-primary/90 transition-colors">
+<span>Get Started</span>
+</button>
+<button class="flex min-w-[120px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-6 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 text-base font-bold shadow-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+<span>Read the Docs</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Code Example -->
+<div class="p-4 flex justify-center mb-16">
+<div class="flex items-center justify-between gap-4 rounded-xl bg-[#0B0E14] border border-slate-800 p-4 max-w-2xl w-full shadow-lg">
+<div class="flex items-center gap-3 w-full">
+<span class="text-slate-500 font-mono text-sm">$</span>
+<p class="text-slate-300 font-mono text-sm font-medium w-full">npm create vibeblocks@latest<span class="inline-block w-2 h-4 ml-1 bg-slate-400 align-middle"></span></p>
+</div>
+<button aria-label="Copy code" class="flex items-center justify-center rounded-md h-8 w-8 text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined text-[18px]">content_copy</span>
+</button>
+</div>
+</div>
+<!-- TechProof Section -->
+<div class="flex flex-col gap-8 px-4 py-12 @container bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-slate-200 dark:border-slate-800">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="flex flex-col gap-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow-sm">
+<div class="text-primary bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-2xl">check_circle</span>
+</div>
+<div class="flex flex-col gap-2">
+<h2 class="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight">Lighthouse 100</h2>
+<p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">Achieve a perfect Lighthouse score out of the box with optimized core web vitals.</p>
+</div>
+</div>
+<div class="flex flex-col gap-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow-sm">
+<div class="text-primary bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-2xl">account_tree</span>
+</div>
+<div class="flex flex-col gap-2">
+<h2 class="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight">Zero JS Baseline</h2>
+<p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">Ship zero JavaScript to the client by default. Interactive only when necessary.</p>
+</div>
+</div>
+<div class="flex flex-col gap-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow-sm">
+<div class="text-primary bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-2xl">public</span>
+</div>
+<div class="flex flex-col gap-2">
+<h2 class="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight">Edge Ready</h2>
+<p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">Deploy globally on the edge with ease. Sub-millisecond routing worldwide.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<footer class="flex flex-col sm:flex-row items-center justify-between gap-6 px-10 py-8 mt-12 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-center @container">
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Engineered by AA Digital Business</p>
+<div class="flex flex-wrap items-center justify-center gap-6">
+<a class="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 text-sm font-medium transition-colors" href="#">GitHub</a>
+<a class="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 text-sm font-medium transition-colors" href="#">Twitter</a>
+<a class="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 text-sm font-medium transition-colors" href="#">Discord</a>
+</div>
+</footer>
+</div>
+</div>
+</div>
+</div>
+</body></html>
