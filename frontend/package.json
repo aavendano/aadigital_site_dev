@@ -1,0 +1,17 @@
+{
+  "name": "frontend",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "astro": "^5.2.0",
+    "@astrojs/starlight": "^0.31.0",
+    "@astrojs/tailwind": "^6.0.0",
+    "@astrojs/sitemap": "^3.2.0"
+  }
+}
