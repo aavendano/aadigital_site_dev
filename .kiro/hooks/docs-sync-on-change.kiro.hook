@@ -1,0 +1,25 @@
+{
+  "enabled": true,
+  "name": "Auto-update docs on source changes",
+  "description": "Monitors JavaScript, TypeScript, JSON, and Astro source files across the monorepo. When changes are detected, asks the agent to update relevant documentation in README.md or the frontend/src/content/docs/ folder to keep docs in sync with code changes.",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "*.js",
+      "*.ts",
+      "*.mjs",
+      "*.astro",
+      "*.json",
+      "backend/src/**/*.js",
+      "backend/config/*.js",
+      "frontend/src/**/*.ts",
+      "frontend/src/**/*.astro",
+      ".py"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Review the changes made to the source files and update the relevant documentation. If the changes affect overall architecture or setup, update the README.md. If the changes are specific to technical implementation details, update the appropriate documentation in frontend/src/content/docs/. Ensure the documentation accurately reflects the current code state."
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "enabled": true,
+  "name": "Code Quality Reviewer",
+  "description": "Analyzes modified source code files for potential improvements including code smells, design patterns, best practices, readability, maintainability, and performance optimizations",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "*.js",
+      "*.ts",
+      "*.jsx",
+      "*.tsx",
+      "*.astro",
+      "*.mjs"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Analyze the code changes in this file for potential improvements. Focus on:\n- Code smells and anti-patterns\n- Opportunities to apply design patterns\n- Best practices for the language/framework being used\n- Readability and maintainability improvements\n- Performance optimizations\n- Consistency with the existing codebase\n\nProvide specific, actionable suggestions while maintaining the existing functionality. Keep suggestions concise and prioritize the most impactful improvements."
+  }
+}

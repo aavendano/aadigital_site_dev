@@ -1,0 +1,208 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const posts = [
+  {
+    title: "The Architecture of Zero-Gravity",
+    excerpt:
+      "Exploring the core principles of VibeBlocks and how we achieved sub-millisecond routing.",
+    category: "Architecture",
+    date: "Mar 01, 2026",
+    readingTime: "5 min",
+    featured: true,
+  },
+  {
+    title: "Optimizing for the Edge",
+    excerpt:
+      "Learn how to deploy VibeBlocks globally with maximum performance.",
+    category: "Performance",
+    date: "Feb 28, 2026",
+    readingTime: "3 min",
+  },
+  {
+    title: "Community Spotlight: VibeBlocks UI",
+    excerpt:
+      "A look at the first community-driven component library for VibeBlocks.",
+    category: "Community",
+    date: "Feb 25, 2026",
+    readingTime: "4 min",
+  },
+];
+---
+
+<BaseLayout title="Blog">
+  <div
+    class="relative flex min-h-screen w-full flex-col group/design-root overflow-x-hidden"
+  >
+    <div class="layout-container flex h-full grow flex-col">
+      <!-- Header -->
+      <header
+        class="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-slate-800 px-10 py-3 bg-white dark:bg-slate-900 sticky top-0 z-50"
+      >
+        <div class="flex items-center gap-4 text-slate-900 dark:text-slate-100">
+          <div class="size-6 text-primary">
+            <span class="material-symbols-outlined text-2xl">grid_view</span>
+          </div>
+          <a
+            href="/"
+            class="text-slate-900 dark:text-slate-100 text-xl font-bold leading-tight tracking-tight"
+            >VibeBlocks</a
+          >
+        </div>
+        <div class="flex flex-1 justify-center gap-8">
+          <div class="flex items-center gap-9">
+            <a
+              class="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 text-sm font-medium transition-colors"
+              href="/docs">Docs</a
+            >
+            <a
+              class="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 text-sm font-medium transition-colors"
+              href="#">Recipes</a
+            >
+            <a
+              class="text-primary text-sm font-bold relative pb-1"
+              href="/blog"
+            >
+              Blog
+              <span class="absolute bottom-0 left-0 w-full h-[2px] bg-primary"
+              ></span>
+            </a>
+          </div>
+        </div>
+        <div class="flex justify-end">
+          <button
+            class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 px-4 bg-primary text-slate-900 text-sm font-bold shadow-sm hover:bg-primary/90 transition-colors"
+          >
+            <span>Deploy</span>
+          </button>
+        </div>
+      </header>
+
+      <main class="flex-1 max-w-[1240px] mx-auto w-full px-6 py-12">
+        <div class="flex flex-col gap-10">
+          <div class="flex flex-col gap-4 text-center">
+            <h1
+              class="text-slate-900 dark:text-white text-4xl sm:text-6xl font-black leading-tight tracking-tight"
+            >
+              VibeBlocks Blog
+            </h1>
+            <div class="max-w-xl mx-auto w-full">
+              <div class="relative flex items-center">
+                <span
+                  class="material-symbols-outlined absolute left-4 text-slate-400"
+                  >search</span
+                >
+                <input
+                  type="text"
+                  placeholder="Search articles..."
+                  class="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-xl py-4 pl-12 pr-4 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary transition-all shadow-inner"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="flex justify-center gap-4 flex-wrap">
+            <button
+              class="px-6 py-2 rounded-full bg-primary text-slate-900 font-bold text-sm shadow-sm transition-transform active:scale-95"
+              >All</button
+            >
+            <button
+              class="px-6 py-2 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-medium text-sm hover:border-primary transition-colors"
+              >Performance</button
+            >
+            <button
+              class="px-6 py-2 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-medium text-sm hover:border-primary transition-colors"
+              >Architecture</button
+            >
+            <button
+              class="px-6 py-2 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-medium text-sm hover:border-primary transition-colors"
+              >Community</button
+            >
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-4">
+            {
+              posts.map((post) => (
+                <article
+                  class={`${post.featured ? "md:col-span-2" : ""} group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:border-primary/30 transition-all duration-300`}
+                >
+                  <div
+                    class={`bg-slate-50 dark:bg-slate-800 w-full overflow-hidden ${post.featured ? "aspect-[21/9]" : "aspect-video"} relative`}
+                  >
+                    <div class="absolute inset-0 flex items-center justify-center">
+                      <span class="material-symbols-outlined text-6xl text-slate-200 dark:text-slate-700 font-thin scale-150 transition-transform group-hover:scale-[1.7] duration-500">
+                        article
+                      </span>
+                    </div>
+                    {post.featured && (
+                      <span class="absolute top-4 left-4 bg-primary text-slate-900 text-xs font-black uppercase px-3 py-1 rounded-full shadow-lg">
+                        Featured
+                      </span>
+                    )}
+                  </div>
+                  <div class="p-8 flex flex-col gap-4">
+                    <div class="flex items-center gap-3">
+                      <span class="text-primary text-xs font-black uppercase tracking-widest">
+                        {post.category}
+                      </span>
+                      <span class="w-1 h-1 rounded-full bg-slate-300" />
+                      <span class="text-slate-400 text-xs font-medium">
+                        {post.date}
+                      </span>
+                    </div>
+                    <h2
+                      class={`text-slate-900 dark:text-white ${post.featured ? "text-3xl" : "text-xl"} font-black leading-tight group-hover:text-primary transition-colors`}
+                    >
+                      <a href="/blog/the-architecture-of-zero-gravity">
+                        {post.title}
+                      </a>
+                    </h2>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed line-clamp-2">
+                      {post.excerpt}
+                    </p>
+                    <div class="flex items-center justify-between mt-4">
+                      <span class="text-slate-400 text-xs font-bold uppercase tracking-tighter">
+                        By AA Digital Team
+                      </span>
+                      <a
+                        href="/blog/the-architecture-of-zero-gravity"
+                        class="flex items-center gap-2 text-primary font-bold text-sm transform group-hover:translate-x-1 transition-transform"
+                      >
+                        <span>Read More</span>
+                        <span class="material-symbols-outlined text-lg">
+                          arrow_forward
+                        </span>
+                      </a>
+                    </div>
+                  </div>
+                </article>
+              ))
+            }
+          </div>
+        </div>
+      </main>
+
+      <footer
+        class="flex flex-col sm:flex-row items-center justify-between gap-6 px-10 py-12 mt-20 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-center"
+      >
+        <p class="text-slate-500 dark:text-slate-400 text-sm font-medium">
+          Engineered by AA Digital Business
+        </p>
+        <div class="flex flex-wrap items-center justify-center gap-6">
+          <a
+            class="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 text-sm font-medium transition-colors"
+            href="#">GitHub</a
+          >
+          <a
+            class="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 text-sm font-medium transition-colors"
+            href="#">Twitter</a
+          >
+          <a
+            class="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 text-sm font-medium transition-colors"
+            href="#">Discord</a
+          >
+        </div>
+      </footer>
+    </div>
+  </div>
+</BaseLayout>

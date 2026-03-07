@@ -1,34 +1,7 @@
-<!DOCTYPE html>
-
-<html class="light" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>VibeBlocks Documentation Page</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#00ff40",
-                        "background-light": "#f5f8f6",
-                        "background-dark": "#0f2314",
-                    },
-                    fontFamily: {
-                        "display": ["Inter", "sans-serif"],
-                        "mono": ["JetBrains Mono", "monospace"]
-                    },
-                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
-                },
-            },
-        }
-    </script>
-</head>
-<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display min-h-screen flex flex-col">
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Documentation">
 <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-6 sm:px-10 py-3 sticky top-0 z-50">
 <div class="flex items-center gap-4 text-slate-900 dark:text-slate-100">
 <div class="size-6 text-primary">
@@ -36,11 +9,11 @@
 <path d="M4 42.4379C4 42.4379 14.0962 36.0744 24 41.1692C35.0664 46.8624 44 42.2078 44 42.2078L44 7.01134C44 7.01134 35.068 11.6577 24.0031 5.96913C14.0971 0.876274 4 7.27094 4 7.27094L4 42.4379Z"></path>
 </svg>
 </div>
-<h2 class="text-lg font-bold leading-tight tracking-tight">VibeBlocks</h2>
+<a href="/" class="text-lg font-bold leading-tight tracking-tight">VibeBlocks</a>
 </div>
 <div class="flex flex-1 justify-end items-center gap-8">
 <div class="hidden md:flex items-center gap-6">
-<a class="text-sm font-medium leading-normal relative text-primary pb-1" href="#">
+<a class="text-sm font-medium leading-normal relative text-primary pb-1" href="/docs">
                     Docs
                     <span class="absolute bottom-0 left-0 w-full h-[2px] bg-primary"></span>
 </a>
@@ -111,17 +84,20 @@
 <div class="p-5 overflow-x-auto">
 <pre class="font-mono text-sm leading-relaxed text-slate-300"><span class="text-[#c678dd]">import</span> <span class="text-[#e5c07b]">{</span> <span class="text-[#e06c75]">BrandSignature</span> <span class="text-[#e5c07b]">}</span> <span class="text-[#c678dd]">from</span> <span class="text-[#98c379]">"@vibeblocks/core"</span><span class="text-[#abb2bf]">;</span>
 
-<span class="text-[#56b6c2]">&lt;</span><span class="text-[#e06c75]">BrandSignature</span> <span class="text-[#d19a66]">name</span><span class="text-[#56b6c2]">=</span><span class="text-[#98c379]">"AA Digital"</span> <span 50="" bg-slate-50="" border="" border-slate-200="" class="text-[#56b6c2]/&gt;&lt;/span&gt; &lt;/pre&gt; &lt;/div&gt; &lt;/div&gt; &lt;div class=" dark:bg-slate-900="" dark:border-slate-800"="" flex="" gap-4="" p-5="" rounded-xl="">
-                        <div class="text-primary mt-1 flex-shrink-0">
-                            <span class="material-symbols-outlined text-[24px]">info</span>
-                        </div>
-                        <div class="flex flex-col gap-1">
-                            <h4 class="text-slate-900 dark:text-slate-100 text-sm font-bold">Note</h4>
-                            <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+<span class="text-[#56b6c2]">&lt;</span><span class="text-[#e06c75]">BrandSignature</span> <span class="text-[#d19a66]">name</span><span class="text-[#56b6c2]">=</span><span class="text-[#98c379]">"AA Digital"</span> <span class="text-[#56b6c2]">/&gt;</span></pre>
+</div>
+</div>
+<div class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex gap-4 p-5 rounded-xl">
+<div class="text-primary mt-1 flex-shrink-0">
+<span class="material-symbols-outlined text-[24px]">info</span>
+</div>
+<div class="flex flex-col gap-1">
+<h4 class="text-slate-900 dark:text-slate-100 text-sm font-bold">Note</h4>
+<p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
                                 The <code>@vibeblocks/core</code> package is tree-shakeable. Only the components you actually import will be included in your final bundle.
                             </p>
-                        </div>
-                    </span></pre></div>
+</div>
+</div>
 </div>
 </div>
 <footer class="mt-auto border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-8 px-6 text-center">
@@ -129,6 +105,6 @@
                     Engineered by <span class="font-semibold text-slate-700 dark:text-slate-300">AA Digital Business</span>
 </p>
 </footer>
-</div></main>
+</main>
 </div>
-</body></html>
+</BaseLayout>

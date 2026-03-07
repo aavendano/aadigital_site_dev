@@ -1,3 +1,6 @@
 {
-    "kiroAgent.configureMCP": "Enabled"
+    "kiroAgent.configureMCP": "Enabled",
+    "kiro-codex-ide.codex.promptsPath": ".kiro/prompts",
+    "kiro-codex-ide.codex.specsPath": ".kiro/specs",
+    "kiro-codex-ide.codex.steeringPath": ".kiro/steering"
 }

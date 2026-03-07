@@ -1,28 +1,19 @@
-# Product Overview
+---
+title: Product Overview
+---
 
-This is a Strapi-based blog application that provides a headless CMS for managing blog content.
+This is a monorepo for AA Digital Business, a high-end technical architecture and AI-driven systems company.
 
-## Core Features
+The project consists of two main products:
 
-- Content management for blog articles with rich text, media, quotes, and sliders
-- Author and category management
-- SEO metadata support
-- Draft and publish workflow
-- Media library for images and files
-- Dynamic content zones with reusable components
+1. **VibeBlocks Website**: Marketing and documentation site for VibeBlocks, an open-source deterministic orchestration framework for Python. The website serves as technical validation of AA Digital Business's engineering capabilities.
 
-## Content Types
+2. **Hybrid Content Architecture**: Combines Strapi CMS (for dynamic marketing/blog content) with Starlight documentation (for technical docs), deployed as a fully static site.
 
-- Articles: Blog posts with title, description, slug, cover image, author, category, and dynamic content blocks
-- Authors: Content creators with name, email, and avatar
-- Categories: Article categorization (news, tech, food, nature, story)
-- Global: Site-wide settings including site name, SEO defaults, and favicon
-- About: Static about page with dynamic content blocks
+The architecture is called "Zero-Gravity" - emphasizing lightweight, fully static output with no runtime dependencies, while maintaining the flexibility of a headless CMS for content management.
 
-## Dynamic Components
-
-- Rich text blocks (markdown support)
-- Media blocks (images, videos, files)
-- Quote blocks
-- Image sliders
-- SEO metadata
+Key content types:
+- Marketing pages and landing pages (managed via Strapi)
+- Blog articles with authors and categories (managed via Strapi)
+- Technical documentation for VibeBlocks (Git-based MDX via Starlight)
+- SEO-optimized pages with JSON-LD structured data
