@@ -1,0 +1,68 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { fetchArticleBySlug, fetchArticleSlugs, getStrapiMedia } from '../../lib/strapi';
+import { formatPublishDate } from '../../lib/content';
+import { isSupportedBlock } from '../../lib/block-renderer';
+
+import RichTextBlock from '../../components/blocks/RichTextBlock.astro';
+import MediaBlock from '../../components/blocks/MediaBlock.astro';
+import QuoteBlock from '../../components/blocks/QuoteBlock.astro';
+import SliderBlock from '../../components/blocks/SliderBlock.astro';
+
+export async function getStaticPaths() {
+  const slugs = await fetchArticleSlugs();
+
+  const pages = await Promise.all(
+    slugs.map(async (slug) => ({
+      params: { slug },
+      props: { article: await fetchArticleBySlug(slug) },
+    }))
+  );
+
+  return pages.filter((page) => page.props.article);
+}
+
+const { article } = Astro.props;
+
+if (!article) {
+  return Astro.redirect('/404');
+}
+
+const blockMap = {
+  'shared.rich-text': RichTextBlock,
+  'shared.media': MediaBlock,
+  'shared.quote': QuoteBlock,
+  'shared.slider': SliderBlock,
+};
+---
+
+<BaseLayout title={article.title}>
+  <main class="max-w-4xl mx-auto px-6 py-12">
+    <p class="text-sm text-primary font-semibold mb-3">{article.category?.name ?? 'Uncategorized'}</p>
+    <h1 class="text-4xl font-black mb-4">{article.title}</h1>
+    <p class="text-slate-500 mb-8">{formatPublishDate(article.publishedAt)} · {article.author?.name ?? 'Unknown author'}</p>
+
+    {article.cover && (
+      <img
+        src={getStrapiMedia(article.cover) ?? ''}
+        alt={article.cover.alternativeText ?? article.title}
+        class="w-full rounded-xl mb-8"
+      />
+    )}
+
+    <p class="text-lg text-slate-700 dark:text-slate-200 mb-10">{article.description}</p>
+
+    {article.blocks?.map((block) => {
+      if (!isSupportedBlock(block)) {
+        return (
+          <p class="text-sm text-slate-500 italic my-6">
+            Unsupported block type: {block.__component}
+          </p>
+        );
+      }
+
+      const BlockComponent = blockMap[block.__component as keyof typeof blockMap];
+      return <BlockComponent block={block as any} />;
+    })}
+  </main>
+</BaseLayout>

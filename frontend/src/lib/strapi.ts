@@ -1,26 +1,17 @@
-import type { 
-  StrapiMedia, 
-  Article, 
-  Category,
-  HomePage,
-  StrapiResponse, 
-  StrapiEntity 
-} from './types';
+import type { Article, Category, HomePage, StrapiEntity, StrapiMedia, StrapiResponse } from './types';
 
-// ... (previous constants and logDebug)
+let STRAPI_URL = import.meta.env.STRAPI_URL;
+let STRAPI_TOKEN = import.meta.env.STRAPI_API_TOKEN;
 
-/**
- * Flattens Strapi v4 response structure (attributes/data) recursively.
- */
+const DEFAULT_TIMEOUT_MS = 10000;
+const DEBUG_MODE = import.meta.env.STRAPI_DEBUG === 'true';
+const cache = new Map<string, Promise<unknown>>();
+
 function flattenAttributes(data: any): any {
   if (!data) return null;
-
-  if (Array.isArray(data)) {
-    return data.map(flattenAttributes);
-  }
+  if (Array.isArray(data)) return data.map(flattenAttributes);
 
   let flattened = { ...data };
-
   if (data.attributes) {
     flattened = {
       id: data.id,
@@ -30,129 +21,20 @@ function flattenAttributes(data: any): any {
 
   for (const key in flattened) {
     if (flattened[key] && typeof flattened[key] === 'object') {
-      if (flattened[key].data !== undefined) {
-        flattened[key] = flattenAttributes(flattened[key].data);
-      } else {
-        flattened[key] = flattenAttributes(flattened[key]);
-      }
+      flattened[key] =
+        flattened[key].data !== undefined
+          ? flattenAttributes(flattened[key].data)
+          : flattenAttributes(flattened[key]);
     }
   }
 
   return flattened;
 }
 
-/**
- * Fetch all published articles with basic relations.
- * Requirements: 2.1, 2.2, 2.3, 2.4, 3.2-3.6
- */
-export async function fetchArticles(): Promise<Article[]> {
-  return cachedFetch('articles', async () => {
-    const params = new URLSearchParams({
-      'populate[author][populate]': 'avatar',
-      'populate[category]': '*',
-      'populate[cover]': '*',
-      'sort': 'publishedAt:desc',
-    });
-    
-    const response = await fetchAPI<StrapiResponse<StrapiEntity<any>[]>>(`/articles?${params.toString()}`);
-    return flattenAttributes(response.data);
-  });
-}
-
-/**
- * Fetch a single article by slug with full content (blocks).
- * Requirements: 4.4, 2.6
- */
-export async function fetchArticleBySlug(slug: string): Promise<Article | null> {
-  return cachedFetch(`article-${slug}`, async () => {
-    const params = new URLSearchParams({
-      'filters[slug][$eq]': slug,
-      'populate[author][populate]': 'avatar',
-      'populate[category]': '*',
-      'populate[cover]': '*',
-      'populate[blocks]': '*',
-    });
-    
-    const response = await fetchAPI<StrapiResponse<StrapiEntity<any>[]>>(`/articles?${params.toString()}`);
-    
-    if (!response.data || response.data.length === 0) {
-      return null;
-    }
-    
-    return flattenAttributes(response.data[0]);
-  });
-}
-
-/**
- * Fetch only the slugs for all articles.
- * Requirements: 4.3
- */
-export async function fetchArticleSlugs(): Promise<string[]> {
-  return cachedFetch('article-slugs', async () => {
-    const params = new URLSearchParams({
-      'fields[0]': 'slug',
-      'pagination[pageSize]': '100', // Adjust as needed
-    });
-    
-    const response = await fetchAPI<StrapiResponse<StrapiEntity<any>[]>>(`/articles?${params.toString()}`);
-    return response.data.map(item => item.attributes.slug);
-  });
-}
-
-/**
- * Fetch all categories.
- * Requirements: 10.1
- */
-export async function fetchCategories(): Promise<Category[]> {
-  return cachedFetch('categories', async () => {
-    const params = new URLSearchParams({
-      'fields[0]': 'name',
-      'fields[1]': 'slug',
-      'fields[2]': 'description',
-    });
-
-    const response = await fetchAPI<StrapiResponse<StrapiEntity<any>[]>>(`/categories?${params.toString()}`);
-    return flattenAttributes(response.data);
-  });
-}
-
-/**
- * Fetch the homepage single type content.
- * Requirements: 5.1, 5.2
- */
-export async function fetchHomePage(): Promise<HomePage | null> {
-  return cachedFetch('home-page', async () => {
-    const params = new URLSearchParams({
-      'populate': '*',
-    });
-
-    try {
-      const response = await fetchAPI<StrapiResponse<StrapiEntity<any>>>(`/home-page?${params.toString()}`);
-      if (!response.data) return null;
-      return flattenAttributes(response.data);
-    } catch (error) {
-      // If homepage content type doesn't exist yet, return null gracefully
-      if (error instanceof Error && error.message.includes('not found')) {
-        return null;
-      }
-      throw error;
-    }
-  });
-}
-
-let STRAPI_URL = import.meta.env.STRAPI_URL;
-let STRAPI_TOKEN = import.meta.env.STRAPI_API_TOKEN;
-
-const DEFAULT_TIMEOUT_MS = 10000;
-const DEBUG_MODE = import.meta.env.STRAPI_DEBUG === 'true';
-
-const cache = new Map<string, Promise<unknown>>();
-
 const logDebug = (message: string, context?: Record<string, unknown>) => {
   if (!DEBUG_MODE) return;
-  const timestamp = new Date().toISOString();
   // eslint-disable-next-line no-console
-  console.debug(`[StrapiClient][${timestamp}] ${message}`, context ?? {});
+  console.debug(`[StrapiClient] ${message}`, context ?? {});
 };
 
 const normalizeBaseUrl = (url: string): string => url.replace(/\/+$/, '');
@@ -165,21 +47,22 @@ const normalizeEndpoint = (endpoint: string): string => {
   return endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
 };
 
-/**
- * Validates environment variables and throws descriptive errors if missing.
- */
+export class StrapiClientError extends Error {
+  constructor(
+    message: string,
+    public readonly details: { endpoint: string; url: string; status?: number; cause?: unknown }
+  ) {
+    super(message);
+    this.name = 'StrapiClientError';
+  }
+}
+
 export function validateConfig(): void {
-  // Refresh from env in case tests stub values after module load.
   STRAPI_URL = import.meta.env.STRAPI_URL;
   STRAPI_TOKEN = import.meta.env.STRAPI_API_TOKEN;
 
-  if (!STRAPI_URL) {
-    throw new Error('STRAPI_URL environment variable is required');
-  }
-
-  if (!STRAPI_TOKEN) {
-    throw new Error('STRAPI_API_TOKEN environment variable is required');
-  }
+  if (!STRAPI_URL) throw new Error('STRAPI_URL environment variable is required');
+  if (!STRAPI_TOKEN) throw new Error('STRAPI_API_TOKEN environment variable is required');
 
   try {
     new URL(STRAPI_URL);
@@ -188,47 +71,29 @@ export function validateConfig(): void {
   }
 }
 
-/**
- * Constructs the fully-qualified Strapi API URL for an endpoint.
- */
 export function buildStrapiApiUrl(endpoint: string): string {
   validateConfig();
   return `${normalizeBaseUrl(STRAPI_URL)}/api${normalizeEndpoint(endpoint)}`;
 }
 
-/**
- * Clears in-memory API cache (useful for tests).
- */
 export function clearStrapiCache(): void {
   cache.clear();
 }
 
-/**
- * Helper to construct full image URL from Strapi media object.
- */
 export function getStrapiMedia(media: StrapiMedia | null): string | null {
-  if (!media) return null;
+  if (!media?.url?.trim()) return null;
 
-  const mediaUrl = media.url?.trim();
-  if (!mediaUrl) return null;
-
-  if (mediaUrl.startsWith('/')) {
+  if (media.url.startsWith('/')) {
     validateConfig();
-    return `${normalizeBaseUrl(STRAPI_URL)}${mediaUrl}`;
+    return `${normalizeBaseUrl(STRAPI_URL)}${media.url}`;
   }
 
-  return mediaUrl;
+  return media.url;
 }
 
-/**
- * Core fetching function with authentication and error handling.
- */
-export async function fetchAPI<T>(
-  endpoint: string,
-  options: RequestInit = {},
-  timeoutMs = DEFAULT_TIMEOUT_MS
-): Promise<T> {
-  const url = buildStrapiApiUrl(endpoint);
+export async function fetchAPI<T>(endpoint: string, options: RequestInit = {}, timeoutMs = DEFAULT_TIMEOUT_MS): Promise<T> {
+  const normalizedEndpoint = normalizeEndpoint(endpoint);
+  const url = buildStrapiApiUrl(normalizedEndpoint);
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
@@ -238,12 +103,6 @@ export async function fetchAPI<T>(
     ...(options.headers ?? {}),
   };
 
-  logDebug('Sending request', {
-    method: options.method ?? 'GET',
-    url,
-    timeoutMs,
-  });
-
   let response: Response;
   try {
     response = await fetch(url, {
@@ -252,60 +111,146 @@ export async function fetchAPI<T>(
       signal: options.signal ?? controller.signal,
     });
   } catch (error) {
-    if (error instanceof Error && error.name === 'AbortError') {
-      throw new Error(`Strapi API request timed out after ${timeoutMs}ms`);
-    }
-
-    const details = error instanceof Error ? error.message : String(error);
-    throw new Error(`Failed to connect to Strapi at ${url}: ${details}`);
-  } finally {
     clearTimeout(timeoutId);
+    const message = error instanceof Error && error.name === 'AbortError'
+      ? `Strapi API request timed out after ${timeoutMs}ms`
+      : `Failed to connect to Strapi API`;
+
+    throw new StrapiClientError(`${message} (${normalizedEndpoint})`, {
+      endpoint: normalizedEndpoint,
+      url,
+      cause: error,
+    });
   }
 
-  logDebug('Received response', {
-    url,
-    status: response.status,
-    ok: response.ok,
-  });
+  clearTimeout(timeoutId);
+  logDebug('API response', { endpoint: normalizedEndpoint, status: response.status });
 
   if (!response.ok) {
+    const baseMessage = `Strapi API request failed for ${normalizedEndpoint}`;
     if (response.status === 401) {
-      throw new Error('Invalid Strapi API token. Check STRAPI_API_TOKEN');
+      throw new StrapiClientError(`${baseMessage}: invalid API token`, {
+        endpoint: normalizedEndpoint,
+        url,
+        status: response.status,
+      });
     }
 
     if (response.status === 403) {
-      throw new Error('Strapi API token lacks required permissions');
+      throw new StrapiClientError(`${baseMessage}: insufficient permissions`, {
+        endpoint: normalizedEndpoint,
+        url,
+        status: response.status,
+      });
     }
 
     if (response.status === 404) {
-      throw new Error(`Strapi content type not found: ${normalizeEndpoint(endpoint)}`);
+      throw new StrapiClientError(`${baseMessage}: content type not found`, {
+        endpoint: normalizedEndpoint,
+        url,
+        status: response.status,
+      });
     }
 
-    throw new Error(`Strapi API error: ${response.status} ${response.statusText}`);
+    throw new StrapiClientError(`${baseMessage}: ${response.status} ${response.statusText}`, {
+      endpoint: normalizedEndpoint,
+      url,
+      status: response.status,
+    });
   }
 
   try {
     return (await response.json()) as T;
   } catch (error) {
-    const details = error instanceof Error ? error.message : String(error);
-    throw new Error(`Invalid JSON response from Strapi for ${url}: ${details}`);
+    throw new StrapiClientError(`Invalid JSON returned by Strapi for ${normalizedEndpoint}`, {
+      endpoint: normalizedEndpoint,
+      url,
+      cause: error,
+    });
   }
 }
 
-/**
- * Caching wrapper for API calls. Failed requests are not cached.
- */
 export async function cachedFetch<T>(key: string, fetcher: () => Promise<T>): Promise<T> {
-  const cachedPromise = cache.get(key) as Promise<T> | undefined;
-  if (cachedPromise) {
-    return cachedPromise;
-  }
+  const existing = cache.get(key) as Promise<T> | undefined;
+  if (existing) return existing;
 
-  const pendingPromise = fetcher().catch((error) => {
+  const pending = fetcher().catch((error) => {
     cache.delete(key);
     throw error;
   });
 
-  cache.set(key, pendingPromise);
-  return pendingPromise;
+  cache.set(key, pending);
+  return pending;
+}
+
+export async function fetchArticles(): Promise<Article[]> {
+  return cachedFetch('articles', async () => {
+    const params = new URLSearchParams({
+      'populate[author][populate]': 'avatar',
+      'populate[category]': '*',
+      'populate[cover]': '*',
+      sort: 'publishedAt:desc',
+    });
+
+    const response = await fetchAPI<StrapiResponse<StrapiEntity<any>[]>>(`/articles?${params.toString()}`);
+    return flattenAttributes(response.data) ?? [];
+  });
+}
+
+export async function fetchArticleBySlug(slug: string): Promise<Article | null> {
+  return cachedFetch(`article-${slug}`, async () => {
+    const params = new URLSearchParams({
+      'filters[slug][$eq]': slug,
+      'populate[author][populate]': 'avatar',
+      'populate[category]': '*',
+      'populate[cover]': '*',
+      'populate[blocks]': '*',
+    });
+
+    const response = await fetchAPI<StrapiResponse<StrapiEntity<any>[]>>(`/articles?${params.toString()}`);
+    if (!response.data?.length) return null;
+    return flattenAttributes(response.data[0]);
+  });
+}
+
+export async function fetchArticleSlugs(): Promise<string[]> {
+  return cachedFetch('article-slugs', async () => {
+    const params = new URLSearchParams({
+      'fields[0]': 'slug',
+      'pagination[pageSize]': '100',
+    });
+
+    const response = await fetchAPI<StrapiResponse<StrapiEntity<{ slug: string }>[]>>(`/articles?${params.toString()}`);
+    return response.data.map((item) => item.attributes.slug).filter(Boolean);
+  });
+}
+
+export async function fetchCategories(): Promise<Category[]> {
+  return cachedFetch('categories', async () => {
+    const params = new URLSearchParams({
+      'fields[0]': 'name',
+      'fields[1]': 'slug',
+      'fields[2]': 'description',
+    });
+
+    const response = await fetchAPI<StrapiResponse<StrapiEntity<any>[]>>(`/categories?${params.toString()}`);
+    return flattenAttributes(response.data) ?? [];
+  });
+}
+
+export async function fetchHomePage(): Promise<HomePage | null> {
+  return cachedFetch('home-page', async () => {
+    const params = new URLSearchParams({ populate: '*' });
+
+    try {
+      const response = await fetchAPI<StrapiResponse<StrapiEntity<any>>>(`/home-page?${params.toString()}`);
+      return response.data ? flattenAttributes(response.data) : null;
+    } catch (error) {
+      if (error instanceof StrapiClientError && error.details.status === 404) {
+        return null;
+      }
+
+      throw error;
+    }
+  });
 }
