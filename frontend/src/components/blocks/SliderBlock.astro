@@ -1,0 +1,30 @@
+---
+import type { SliderBlock } from '../../lib/types';
+import { getStrapiMedia } from '../../lib/strapi';
+
+interface Props {
+  block: SliderBlock;
+}
+
+const { block } = Astro.props;
+---
+
+<div class="grid sm:grid-cols-2 gap-4 my-8">
+  {block.files?.map((file) => {
+    const url = getStrapiMedia(file);
+    if (!url) {
+      return null;
+    }
+
+    return (
+      <img
+        src={url}
+        alt={file.alternativeText ?? file.name}
+        width={file.width}
+        height={file.height}
+        class="w-full rounded-lg object-cover"
+        loading="lazy"
+      />
+    );
+  })}
+</div>

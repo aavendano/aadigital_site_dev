@@ -1,0 +1,14 @@
+---
+import type { QuoteBlock } from '../../lib/types';
+
+interface Props {
+  block: QuoteBlock;
+}
+
+const { block } = Astro.props;
+---
+
+<blockquote class="border-l-4 border-primary pl-4 my-8">
+  {block.title && <p class="font-semibold mb-2">{block.title}</p>}
+  <p class="italic text-slate-700 dark:text-slate-200">“{block.body}”</p>
+</blockquote>

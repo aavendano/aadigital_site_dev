@@ -1,0 +1,11 @@
+---
+import type { RichTextBlock } from '../../lib/types';
+
+interface Props {
+  block: RichTextBlock;
+}
+
+const { block } = Astro.props;
+---
+
+<section class="prose prose-slate dark:prose-invert max-w-none" set:html={block.body} />

@@ -1,0 +1,25 @@
+---
+import type { MediaBlock } from '../../lib/types';
+import { getStrapiMedia } from '../../lib/strapi';
+
+interface Props {
+  block: MediaBlock;
+}
+
+const { block } = Astro.props;
+const mediaUrl = getStrapiMedia(block.file);
+---
+
+{mediaUrl && (
+  <figure class="my-8">
+    <img
+      src={mediaUrl}
+      alt={block.file.alternativeText ?? block.file.name}
+      width={block.file.width}
+      height={block.file.height}
+      class="w-full rounded-lg"
+      loading="lazy"
+    />
+    {block.file.caption && <figcaption class="text-sm mt-2 text-slate-500">{block.file.caption}</figcaption>}
+  </figure>
+)}
